@@ -13,6 +13,8 @@ hiddenUnits = 512
 hiddenLayers = 1
 batchSize = 128
 epochs = 20
+opt = 'rmsprop'
+activation = 'tanh'
 
 # Get raw data from file
 dataset = np.array(np.genfromtxt("connect-4.data", delimiter=',', dtype=None))
@@ -63,18 +65,18 @@ print X_test.shape[0], 'test samples'
 
 model = Sequential()
 model.add(Dense(hiddenUnits, input_shape=(X_train.shape[1],)))
-model.add(Activation('relu'))
+model.add(Activation(activation))
 model.add(Dropout(dropoutRate))
 for i in xrange(hiddenLayers):
 	model.add(Dense(hiddenUnits))
-	model.add(Activation('relu'))
+	model.add(Activation(activation))
 	model.add(Dropout(dropoutRate))
 model.add(Dense(Y_train.shape[1]))
 model.add(Activation('softmax'))
 
 model.summary()
 
-model.compile(loss='categorical_crossentropy', optimizer=RMSprop(), metrics=['accuracy'])
+model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
 history = model.fit(X_train, Y_train, batch_size=batchSize, nb_epoch=epochs, verbose=1, validation_data=(X_test, Y_test))
 score = model.evaluate(X_test, Y_test, verbose=0)
